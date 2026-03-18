@@ -1,2 +1,18 @@
-# EcoBite-
-The EcoBite project is a software program created to give local campus eateries and university cafeterias a platform to advertise extra or end-of-day food at a discount, which students can subsequently book for pickup.
+EcoBite is a campus surplus food saving platform where cafeterias can post leftover food at discounted prices and students can reserve them.
+
+Tech Stack:
+
+Laravel 11
+MySQL
+Tailwind CSS
+SRS Document: https://docs.google.com/document/d/1OgrcUfqkMPfR7j_q6pk-VEEp6qNdQsms-VZhQifN8Pc/edit?tab=t.0
+
+Student ID: Nazifa Zafrin Ahona; 22201571
+
+Sprint 1 Features:
+
+Add food listing [Nazifa]
+Edit food listing [Nazifa]
+Delete food listing [Asif]
+Active Listings Dashboard [Mahir]
+Sort by Price [Rongona]
