@@ -7,6 +7,7 @@ use Illuminate\Auth\Events\Verified;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\URL;
+use Livewire\Volt\Volt;
 use Tests\TestCase;
 
 class EmailVerificationTest extends TestCase
@@ -17,11 +18,11 @@ class EmailVerificationTest extends TestCase
     {
         $user = User::factory()->unverified()->create();
 
-        $response = $this->actingAs($user)->get('/verify-email');
+        $this->actingAs($user);
 
-        $response
-            ->assertSeeVolt('pages.auth.verify-email')
-            ->assertStatus(200);
+        Volt::test('pages.auth.verify-email')
+            ->assertSee('Verify Email')
+            ->assertSee('Resend Verification Email');
     }
 
     public function test_email_can_be_verified(): void

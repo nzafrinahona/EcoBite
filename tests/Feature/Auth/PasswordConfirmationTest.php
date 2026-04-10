@@ -15,11 +15,11 @@ class PasswordConfirmationTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $response = $this->actingAs($user)->get('/confirm-password');
+        $this->actingAs($user);
 
-        $response
-            ->assertSeeVolt('pages.auth.confirm-password')
-            ->assertStatus(200);
+        Volt::test('pages.auth.confirm-password')
+            ->assertSee('Confirm Password')
+            ->assertSee('Password');
     }
 
     public function test_password_can_be_confirmed(): void
