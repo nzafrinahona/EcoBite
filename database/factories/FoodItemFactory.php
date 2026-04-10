@@ -27,7 +27,7 @@ class FoodItemFactory extends Factory
             'price' => round($originalPrice * fake()->randomFloat(2, 0.3, 0.7), 2),
             'original_price' => $originalPrice,
             'quantity' => fake()->numberBetween(1, 20),
-            'expiry_time' => fake()->dateTimeBetween('+1 hour', '+12 hours'),
+            'expiry_time' => fake()->dateTimeBetween('+1 day', '+7 days'),
             'image' => null,
             'is_active' => true,
         ];
