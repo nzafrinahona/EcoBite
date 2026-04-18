@@ -2,28 +2,33 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Cart extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
-        'user_id',
-        'food_id',
-        'quantity',
+        'student_id',
     ];
 
-    public function user()
+    public function student(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Student::class);
     }
 
-    public function food()
+    public function items(): HasMany
     {
-        return $this->belongsTo(Food::class);
+        return $this->hasMany(CartItem::class);
     }
 
-    public function getSubtotalAttribute(): float
+    public function getTotalAttribute(): float
     {
-        return $this->quantity * $this->food->discounted_price;
+        return $this->items->sum(function ($item) {
+            return $item->foodItem->price * $item->quantity;
+        });
     }
 }

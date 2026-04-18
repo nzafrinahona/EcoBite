@@ -2,88 +2,69 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Cart;
-use App\Models\Food;
+use App\Http\Requests\AddToCartRequest;
+use App\Models\CartItem;
+use App\Services\CartService;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class CartController extends Controller
 {
-    /**
-     * View cart page
-     */
-    public function index()
+    public function __construct(
+        private CartService $cartService
+    ) {}
+
+    public function index(): View
     {
-        $cartItems = Cart::where('user_id', auth()->id())
-            ->with('food')
-            ->get();
+        $student = auth()->user()->student;
+        $cart = $this->cartService->getOrCreateCart($student);
+        $cart->load('items.foodItem.cafeteria');
 
-        $total = $cartItems->sum(fn($item) => $item->quantity * $item->food->discounted_price);
-
-        return view('cart.index', compact('cartItems', 'total'));
+        return view('student.cart', compact('cart'));
     }
 
-    /**
-     * FR-11: Add item to cart
-     */
-    public function add(Request $request, $foodId)
+    public function store(AddToCartRequest $request): RedirectResponse
     {
-        $request->validate([
-            'quantity' => 'required|integer|min:1',
-        ]);
+        $student = auth()->user()->student;
+        $cart = $this->cartService->getOrCreateCart($student);
 
-        $food = Food::findOrFail($foodId);
-        $quantity = (int) $request->quantity;
-
-        if ($quantity > $food->stock) {
-            return back()->with('error', 'Only ' . $food->stock . ' items available in stock.');
+        try {
+            $this->cartService->addItem(
+                $cart,
+                $request->validated('food_item_id'),
+                $request->validated('quantity')
+            );
+            return back()->with('success', 'Item added to cart!');
+        } catch (\RuntimeException $e) {
+            return back()->with('error', $e->getMessage());
         }
-
-        $cartItem = Cart::where('user_id', auth()->id())
-            ->where('food_id', $foodId)
-            ->first();
-
-        if ($cartItem) {
-            $newQuantity = $cartItem->quantity + $quantity;
-
-            if ($newQuantity > $food->stock) {
-                return back()->with('error', 'Cannot add more — only ' . $food->stock . ' in stock and you already have ' . $cartItem->quantity . ' in cart.');
-            }
-
-            $cartItem->update(['quantity' => $newQuantity]);
-        } else {
-            Cart::create([
-                'user_id'  => auth()->id(),
-                'food_id'  => $foodId,
-                'quantity' => $quantity,
-            ]);
-        }
-
-        return back()->with('success', '"' . $food->title . '" added to your cart!');
     }
 
-    /**
-     * Remove one item from cart
-     */
-    public function remove($cartId)
+    public function update(Request $request, CartItem $cartItem): RedirectResponse
     {
-        $cartItem = Cart::findOrFail($cartId);
+        $request->validate(['quantity' => ['required', 'integer', 'min:1']]);
 
-        if ($cartItem->user_id !== auth()->id()) {
-            abort(403);
+        try {
+            $this->cartService->updateItemQuantity($cartItem, $request->quantity);
+            return back()->with('success', 'Cart updated!');
+        } catch (\RuntimeException $e) {
+            return back()->with('error', $e->getMessage());
         }
-
-        $cartItem->delete();
-
-        return back()->with('success', 'Item removed from cart.');
     }
 
-    /**
-     * Clear entire cart
-     */
-    public function clear()
+    public function destroy(CartItem $cartItem): RedirectResponse
     {
-        Cart::where('user_id', auth()->id())->delete();
+        $this->cartService->removeItem($cartItem);
+        return back()->with('success', 'Item removed from cart!');
+    }
 
-        return back()->with('success', 'Cart cleared.');
+    public function clear(): RedirectResponse
+    {
+        $student = auth()->user()->student;
+        $cart = $this->cartService->getOrCreateCart($student);
+        $this->cartService->clearCart($cart);
+
+        return back()->with('success', 'Cart cleared!');
     }
 }

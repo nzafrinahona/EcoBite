@@ -1,6 +1,8 @@
 *.log
 .DS_Store
 .env
+composer.phar
+composer-setup.php
 .env.backup
 .env.production
 .phpactor.json
@@ -22,3 +24,4 @@
 Homestead.json
 Homestead.yaml
 Thumbs.db
+*.sqlite*
