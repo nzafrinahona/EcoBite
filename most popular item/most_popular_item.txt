@@ -1,0 +1,8 @@
+Most Popular Item Feature Implementation
+
+This feature adds a highlighted section to the Active Listings Dashboard that showcases the food item with the highest number of reservations.
+
+Changes:
+1. Updated App\Models\FoodItem: Added 'reservations' relationship.
+2. Updated App\Http\Controllers\FoodItemController: Modified 'index' method to fetch the most popular item based on reservation count.
+3. Updated resources\views\food_items\index.blade.php: Added a high-contrast (Yellow/Black) section to highlight the top-performing item.
