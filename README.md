@@ -8,10 +8,12 @@ Tech Stack:
 
 SRS Document: https://docs.google.com/document/d/1OgrcUfqkMPfR7j_q6pk-VEEp6qNdQsms-VZhQifN8Pc/edit?tab=t.0
 
-Student ID: 
+Team Members:
 - Nazifa Zafrin Ahona; 22201571
 - Mohammad Asif Al Mahfuz; 24101661
-            
+- Mahir
+- Rongona
+
 Sprint 1 Features:
 
 - Add food listing [Nazifa]
