@@ -33,3 +33,5 @@ class ReviewController extends Controller
         return back()->with('success', 'Review submitted successfully!');
     }
 }
+Route::get('/reviews/{reservationId}/create',  [ReviewController::class, 'create'])->name('reviews.create');
+Route::post('/reviews/{reservationId}',         [ReviewController::class, 'store'])->name('reviews.store');

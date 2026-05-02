@@ -21,3 +21,14 @@ class Review extends Model
         return $this->belongsTo(Reservation::class);
     }
 }
+{{--
+    ADD THESE LINES TO routes/web.php
+    Place inside your auth middleware group
+--}}
+
+use App\Http\Controllers\ReviewController;
+
+Route::middleware('auth')->group(function () {
+    Route::get('/reviews/{reservationId}/create',  [ReviewController::class, 'create'])->name('reviews.create');
+    Route::post('/reviews/{reservationId}',         [ReviewController::class, 'store'])->name('reviews.store');
+});
